@@ -1,7 +1,10 @@
 const pomelo = require('pomelo');
+const Code = require('../../../shared/code');
+const authConfig = require('../../config/auth.json')
 
 let UserDao = function() {
     this.utils = null;
+    this.token = null;
 };
 
 /**
@@ -28,6 +31,28 @@ UserDao.prototype.getUserByUid = function(uid, cb) {
     });
 };
 
+UserDao.prototype.getUserByName = function(username, password, cb) {
+    let sql = 'select * from User where name = ? and password = ? limit 1';
+    let args = [username, password];
+    let self = this;
+    pomelo.app.get('dbClient').query(sql, args, function(err, res) {
+        if (err) {
+            self.utils.invokeCallback(cb, {code: Code.FAIL, message: err.message});
+            return;
+        }
+
+        if (res && res.length > 0) {
+            let token = self.token.create(res[0].id, Date.now(), require('../../config/auth.json').secret);
+            console.error('res is %o, token is %j', res, token);
+            self.utils.invokeCallback(cb, null, {
+                token: token,
+                uid: res.id
+            });
+        } else {
+            self.utils.invokeCallback(cb, {code: Code.ENTRY.FA_USER_NOT_EXIST});
+        }
+    })
+}
 /**
  * Create a new user
  * @param (String) username
@@ -47,8 +72,15 @@ UserDao.prototype.createUser = function(username, password, from, cb) {
             return;
         }
 
+        console.error('createUser: %o', {
+            id: ''+res.insertId,
+            name: username,
+            password: password,
+            loginCount: loginCount,
+            lastLoginTime: loginTime
+        })
         self.utils.invokeCallback(cb, null, {
-            id: res.insertId,
+            id: ''+res.insertId, // id is string
             name: username,
             password: password,
             loginCount: loginCount,
@@ -63,5 +95,8 @@ module.exports = {
     props: [{
         name: 'utils',
         ref: 'utils'
+    }, {
+        name: 'token',
+        ref: 'token'
     }]
 }

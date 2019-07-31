@@ -8,7 +8,7 @@ let app = pomelo.createApp();
 app.set('name', 'game_dev');
 
 let Configure = function() {
-  app.configure('production|development', function() {
+  app.configure('production|development', "auth|register", function() {
     // mysql pool
     app.loadConfig("mysqlConfig", path.resolve(app.getBase() + "/config/mysql.json"));
     let dbClient = bearcat.getBean('mysqlPool').init(app.get('mysqlConfig'));
@@ -31,7 +31,7 @@ let Configure = function() {
     app.set('authConfig', require('./config/auth.json'));
   });
 
-  app.configure('production|development', "gate", function() {
+  app.configure('production|development', "gate|register", function() {
     app.set("connectorConfig", {
       conector: pomelo.connectors.hybridconnector
     });

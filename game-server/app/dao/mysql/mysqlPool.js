@@ -18,7 +18,8 @@ MysqlPool.prototype.init = function(mysqlConfig) {
         user: mysqlConfig.user,
         password: mysqlConfig.password,
         database: mysqlConfig.database,
-        supportBigNumbers: true
+        supportBigNumbers: true,
+        bigNumberStrings: true
     });
 
     this.query = this.NNDQuery;
