@@ -28,6 +28,35 @@ UserDao.prototype.getUserByUid = function(uid, cb) {
     });
 };
 
+/**
+ * Create a new user
+ * @param (String) username
+ * @param {String} password
+ * @param {String} from Register source
+ * @param {function} cb Call back function.
+ */
+UserDao.prototype.createUser = function(username, password, from, cb) {
+    let sql = 'insert into User(name, password, `from`, loginCount, lastLoginTime) values(?,?,?,?,?)';
+    let loginTime = Date.now();
+    let loginCount = 1;
+    let args = [username, password, from || '', loginCount, loginTime];
+    let self = this;
+    pomelo.app.get('dbClient').insert(sql, args, function(err, res) {
+        if (err) {
+            self.utils.invokeCallback(cb, {code: err.number, msg: err.message}, null);
+            return;
+        }
+
+        self.utils.invokeCallback(cb, null, {
+            id: res.insertId,
+            name: username,
+            password: password,
+            loginCount: loginCount,
+            lastLoginTime: loginTime
+        })
+    })
+};
+
 module.exports = {
     id: 'userDao',
     func: UserDao,
