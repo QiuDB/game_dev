@@ -1,0 +1,2 @@
+[2019-07-31 09:47:39.125] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2019-07-31 09:47:39.147] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
