@@ -18,6 +18,11 @@ let Configure = function() {
         useProtobuf : true
       });
   });
+
+  // app configuration
+  app.configure('production|development', 'auth', function() {
+    app.set('authConfig', require('./config/auth.json'));
+  })
 }
 
 // https://github.com/bearcatjs/treasures
