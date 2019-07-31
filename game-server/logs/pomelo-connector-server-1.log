@@ -1,0 +1,4 @@
+[2019-07-31 10:10:25.863] [INFO] pomelo - [32m[E:\learn\game_dev\game-server\node_modules\pomelo\lib\application.js] [39mapplication inited: "connector-server-1"
+[2019-07-31 10:10:26.324] [INFO] pomelo - [32m[E:\learn\game_dev\game-server\node_modules\pomelo\lib\application.js] [39m"connector-server-1" enter after start...
+[2019-07-31 10:10:26.326] [INFO] pomelo - [32m[E:\learn\game_dev\game-server\node_modules\pomelo\lib\application.js] [39m"connector-server-1" finish start
+[2019-07-31 10:10:26.326] [INFO] pomelo - [32m[E:\learn\game_dev\game-server\node_modules\pomelo\lib\application.js] [39m"connector-server-1" startup in 332 ms

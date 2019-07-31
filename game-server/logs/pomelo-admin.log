@@ -1,0 +1,6 @@
+[2019-07-31 10:10:25.609] [INFO] pomelo-admin - [32m[MqttServer] [39m[MqttServer] listen on 3005
+[2019-07-31 10:10:25.624] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "master", "127.0.0.1", 3005
+[2019-07-31 10:10:26.246] [INFO] pomelo-admin - [32m[ConsoleService] [39mtry to connect master: "connector", "127.0.0.1", 3005
+[2019-07-31 10:10:51.518] [INFO] pomelo-admin - [32m[MasterAgent] [39mclient user : monitor login to master
+[2019-07-31 10:11:28.469] [DEBUG] pomelo-admin - [36m[MasterSocket] [39mdisconnect pomelo_cli_1564539051425 client "client"
+[2019-07-31 10:11:28.470] [INFO] pomelo-admin - [32m[MasterSocket] [39mclient user monitor exit
