@@ -1,6 +1,6 @@
 const pomelo = require('pomelo');
 const bearcat = require('bearcat');
-
+const path = require('path');
 /**
  * Init app for client.
  */
@@ -8,6 +8,13 @@ let app = pomelo.createApp();
 app.set('name', 'game_dev');
 
 let Configure = function() {
+  app.configure('production|development', function() {
+    // mysql pool
+    app.loadConfig("mysqlConfig", path.resolve(app.getBase() + "/config/mysql.json"));
+    let dbClient = bearcat.getBean('mysqlPool').init(app.get('mysqlConfig'));
+    app.set('dbClient', dbClient);
+  });
+
   // app configuration
   app.configure('production|development', 'connector', function(){
     app.set('connectorConfig',
