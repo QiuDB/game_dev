@@ -1,10 +1,26 @@
-module.exports = function(app) {
-  return new Handler(app);
+const bearcat = require('bearcat');
+const async = require('async');
+const Code = require('../../../../../shared/code');
+
+let Handler = function(app) {
+  this.app = app;
+  this.userDao = null;
 };
 
-var Handler = function(app) {
-  this.app = app;
-};
+module.exports = function(app) {
+	return bearcat.getBean({
+		id: 'entryHandler',
+		func: Handler,
+		args: [{
+			name: 'app',
+			value: app
+		}],
+		props: [{
+			name: 'userDao',
+			ref: 'userDao'
+		}]
+	})
+}
 
 /**
  * New client entry.
@@ -15,37 +31,38 @@ var Handler = function(app) {
  * @return {Void}
  */
 Handler.prototype.entry = function(msg, session, next) {
-  next(null, {code: 200, msg: 'game server is ok.'});
-};
+  let token = msg.token;
+  if (!token) {
+	  next(new Error('token invalid'), {code: Code.FAIL});
+	  return;
+  }
 
-/**
- * Publish route for mqtt connector.
- *
- * @param  {Object}   msg     request message
- * @param  {Object}   session current session object
- * @param  {Function} next    next step callback
- * @return {Void}
- */
-Handler.prototype.publish = function(msg, session, next) {
-	var result = {
-		topic: 'publish',
-		payload: JSON.stringify({code: 200, msg: 'publish message is ok.'})
-	};
-  next(null, result);
-};
+  let player, players;
+  let self = this;
+  async.waterfall([
+	  function(cb) {
+		  // auth token
+		  self.app.rpc.authRemote.auth(session, token, function(code, user) {
+			  if (code !== Code.OK) {
+				next(null, {code: code});
+				return;
+			  }
 
-/**
- * Subscribe route for mqtt connector.
- *
- * @param  {Object}   msg     request message
- * @param  {Object}   session current session object
- * @param  {Function} next    next step callback
- * @return {Void}
- */
-Handler.prototype.subscribe = function(msg, session, next) {
-	var result = {
-		topic: 'subscribe',
-		payload: JSON.stringify({code: 200, msg: 'subscribe message is ok.'})
-	};
-  next(null, result);
+			  if (!user) {
+				next(null, {code: Code.ENTRY.FA_USER_NOT_EXIST});
+				return;
+			  }
+
+			  // query player info by user id
+			  let uid = user.id;
+
+		  });
+	  }
+  ], function(err) {
+	  if (err) {
+		  next(err, {code: Code.FAIL});
+		  return;
+	  }
+	  next(null, {code: Code.OK, player: players ? players[0] : null});
+  })
 };

@@ -4,6 +4,7 @@ const Code = require('../../../../../shared/code');
 let RegisterHandler = function(app) {
     this.app = app;
     this.utils = null;
+    this.userDao = null;
 };
 
 module.exports = function(app) {
@@ -17,6 +18,9 @@ module.exports = function(app) {
         props: [{
             name: 'utils',
             ref: 'utils'
+        }, {
+            name: 'userDao',
+            ref: 'userDao'
         }]
     })
 };
@@ -28,7 +32,7 @@ RegisterHandler.prototype.login = function(msg, session, next) {
         return;
     }
 
-    this.app.get('dbClient').getUserByName(name, password, next);
+    this.userDao.getUserByName(name, password, next);
 };
 
 RegisterHandler.prototype.register = function(msg, session, next) {
@@ -38,5 +42,5 @@ RegisterHandler.prototype.register = function(msg, session, next) {
         return;
     }
 
-    this.app.get('dbClient').createUser(name, passowrd, next);
+    this.userDao.createUser(name, passowrd, next);
 };
