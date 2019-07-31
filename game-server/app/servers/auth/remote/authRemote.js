@@ -1,9 +1,11 @@
 const bearcat = require('bearcat');
 const Code = require('../../../../../shared/code');
+const logger = require('pomelo-logger').getLogger('pomelo', __filename);
 
 let AuthRemote = function(app) {
     this.app = app;
     this.tokenService = null;
+    this.utilsService = null;
 
     const authConfig = this.app.get('authConfig');
     this.secret = authConfig.secret;
@@ -12,17 +14,19 @@ let AuthRemote = function(app) {
 
 AuthRemote.prototype.auth = function(token, cb) {
     let res = this.tokenService.parse(token, this.secret);
+    console.error('after parse res is %o', res);
     if (!res) {
-        cb(null, Code.ENTRY.FA_TOKEN_INVALID);
+        this.utilsService.invokeCallback(cb, null, Code.ENTRY.FA_TOKEN_INVALID);
         return;
     }
 
-    if (!this.checkExpire(res.expire)) {
-        cb (null, Code.ENTRY.FA_TOKEN_EXPIRE);
+    if (!this.checkExpire(res.timestamp)) {
+        this.utilsService.invokeCallback(cb, null, Code.ENTRY.FA_TOKEN_EXPIRE);
         return;
     }
 
-    cb(null, Code.OK, {});
+    console.error('token验证成功: %j', token)
+    this.utilsService.invokeCallback(cb, null, Code.OK, {});
 }
 
 /**
@@ -32,7 +36,7 @@ AuthRemote.prototype.auth = function(token, cb) {
  * @return {Boolean}        true for not expire and false for expire
  */
 AuthRemote.prototype.checkExpire = function(expire) {
-    if (expire < 0) {
+    if (this.expire < 0) {
         // negative expire mean never expire
         return true;
     }
@@ -51,6 +55,9 @@ module.exports = function(app) {
         props: [{
             name: 'tokenService',
             ref: 'token'
+        }, {
+            name: 'utilsService',
+            ref: 'utils'
         }]
     })
 }
