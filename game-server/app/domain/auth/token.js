@@ -49,7 +49,7 @@ Token.prototype.parse = function(token, pwd) {
         return null;
     }
 
-    return {uid: ts[0], timestamp: parseInt(ts1, 10)};
+    return {uid: ts[0], timestamp: parseInt(ts[1], 10)};
 };
 
 module.exports = {
