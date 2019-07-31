@@ -22,7 +22,13 @@ let Configure = function() {
   // app configuration
   app.configure('production|development', 'auth', function() {
     app.set('authConfig', require('./config/auth.json'));
-  })
+  });
+
+  app.configure('production|development', "gate", function() {
+    app.set("connectorConfig", {
+      conector: pomelo.connectors.hybridconnector
+    });
+  });
 }
 
 // https://github.com/bearcatjs/treasures

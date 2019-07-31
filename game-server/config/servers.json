@@ -3,8 +3,15 @@
     "auth": [
       {"id": "auth-server-1", "host": "127.0.0.1", "port": 4000}
     ],
+    "gate": [
+      {"id": "gate-server-1", "host": "127.0.0.1", "port": 4001, "clientHost": "127.0.0.1", "clientPort": 5001}
+    ],
     "connector": [
-     {"id": "connector-server-1", "host": "127.0.0.1", "port": 3150, "clientHost": "127.0.0.1", "clientPort": 3010, "frontend": true}
+     {"id": "connector-server-1", "host": "127.0.0.1", "port": 4101, "clientHost": "127.0.0.1", "clientPort": 5101, "frontend": true},
+     {"id": "connector-server-2", "host": "127.0.0.1", "port": 4102, "clientHost": "127.0.0.1", "clientPort": 5102, "frontend": true},
+     {"id": "connector-server-3", "host": "127.0.0.1", "port": 4103, "clientHost": "127.0.0.1", "clientPort": 5103, "frontend": true},
+     {"id": "connector-server-4", "host": "127.0.0.1", "port": 4104, "clientHost": "127.0.0.1", "clientPort": 5104, "frontend": true},
+     {"id": "connector-server-5", "host": "127.0.0.1", "port": 4105, "clientHost": "127.0.0.1", "clientPort": 5105, "frontend": true}
     ]
   },
   "production":{
