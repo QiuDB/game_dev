@@ -1,5 +1,7 @@
 const pomelo = require('pomelo');
+const bearcat = require('bearcat');
 const logger = require('pomelo-logger').getLogger('pomelo', __filename);
+const Consts = require('../consts/consts');
 
 let PlayerDao = function() {
     this.utils = null;
@@ -35,19 +37,20 @@ PlayerDao.prototype.getPlayerByUid = function(uid, cb) {
 PlayerDao.prototype.createPlayer = function(uid, name, roleId, cb) {
     let sql = 'insert into Player (' +
             'userId, kindId, kindName, name, country, rank, level, experience, attackValue, defenceValue, hitRate,' +
-            'dodgeRate, walkSpeed, attackSpeed, hp, mp, maxHp, maxMp, areaId, x, y, skillPoint)' +
-            + 'values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    let character = dataApi.character.findById(roleId);
+            'dodgeRate, walkSpeed, attackSpeed, hp, mp, maxHp, maxMp, areaId, x, y, skillPoint) ' +
+            'values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    let character = bearcat.getBean('dataApi').character().findById(roleId);
     let role = {name: character.englishName, career: 'warrior', country: 1, gender: 'male'};
-    let born = consts.BronPlace;
+    let born = Consts.BornPlace;
     let x = born.x + Math.floor(Math.random() * born.width);
     let y = born.y + Math.floor(Math.random() + born.height);
-    let areaId = consts.PLAYER.initAreaId;
+    let areaId = Consts.PLAYER.initAreaId;
     let args = [uid, roleId, character.englishName, name, 1, 1, 1, 0, character.attackValue, character.defenceValue, character.hitRate,
-        character.dodgeRate, character.walkSpeed, character.attackSpeed, character.hp, character.mp, character.maxHp, character.maxMp,
+        character.dodgeRate, character.walkSpeed, character.attackSpeed, character.hp, character.mp, character.hp, character.mp,
         areaId, x, y, 1];
+    logger.warn('args is %o', args)
 
-    pomelo.app.get('dbClient').insert(sql, args, function(err, res) {
+    pomelo.app.get('dbClient').insert(sql, args, (err, res) => {
         if (err) {
             logger.error('create player failed! ' + err.message);
             self.utils.invokeCallback(cb, err.message, null);
@@ -69,12 +72,12 @@ PlayerDao.prototype.createPlayer = function(uid, name, roleId, cb) {
             skillPoint: 1,
             hitRate: character.hitRate,
             dodgeRate: character.dodgeRate,
-            walkSpeed: walkSpeed,
+            walkSpeed: character.walkSpeed,
             attackSpeed: character.attackSpeed,
             equipments: {},
             bag: null
         }
         logger.debug('create player success: %o', player);
-        self.utils.invokeCallback(cb, null, player);
+        this.utils.invokeCallback(cb, null, player);
     });
 }
