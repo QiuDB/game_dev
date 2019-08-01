@@ -6,6 +6,7 @@ let AuthRemote = function(app) {
     this.app = app;
     this.tokenService = null;
     this.utilsService = null;
+    this.userDao = null;
 
     const authConfig = this.app.get('authConfig');
     this.secret = authConfig.secret;
@@ -14,7 +15,7 @@ let AuthRemote = function(app) {
 
 AuthRemote.prototype.auth = function(token, cb) {
     let res = this.tokenService.parse(token, this.secret);
-    console.error('after parse res is %o', res);
+    logger.debug('after parse res is %o', res);
     if (!res) {
         this.utilsService.invokeCallback(cb, null, Code.ENTRY.FA_TOKEN_INVALID);
         return;
@@ -25,8 +26,20 @@ AuthRemote.prototype.auth = function(token, cb) {
         return;
     }
 
-    console.error('token验证成功: %j', token)
-    this.utilsService.invokeCallback(cb, null, Code.OK, {});
+    logger.debug('token验证成功: %j', token)
+    this.userDao.getUserByUid(res.uid, (err, user) => {
+        if (!err) {
+            this.utilsService.invokeCallback(cb, Code.FAIL, null);
+            return;
+        }
+
+        if (!res) {
+            this.utilsService.invokeCallback(cb, Code.OK, null);
+            return;
+        }
+
+        this.utilsService.invokeCallback(cb, Code.OK, res);
+    })
 }
 
 /**
@@ -58,6 +71,9 @@ module.exports = function(app) {
         }, {
             name: 'utilsService',
             ref: 'utils'
+        }, {
+            name: 'userDao',
+            ref: 'userDao'
         }]
     })
 }
