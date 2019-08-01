@@ -48,7 +48,6 @@ PlayerDao.prototype.createPlayer = function(uid, name, roleId, cb) {
     let args = [uid, roleId, character.englishName, name, 1, 1, 1, 0, character.attackValue, character.defenceValue, character.hitRate,
         character.dodgeRate, character.walkSpeed, character.attackSpeed, character.hp, character.mp, character.hp, character.mp,
         areaId, x, y, 1];
-    logger.warn('args is %o', args)
 
     pomelo.app.get('dbClient').insert(sql, args, (err, res) => {
         if (err) {
