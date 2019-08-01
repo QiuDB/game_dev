@@ -26,7 +26,6 @@ DataApi.prototype.init = function() {
 DataApi.prototype.load = function(filepath) {
     // 获取文件名
     let filename = path.basename(filepath);
-    logger.warn('filepath is %j, filename is %j', filepath, filename)
     // 去掉后缀
     if (!/\.json$/.test(filename)) {
         // 不是.json文件，不处理

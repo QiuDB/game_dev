@@ -2,7 +2,7 @@ const bearcat = require('bearcat');
 const util = require('util');
 const logger = require('pomelo-logger').getLogger('pomelo', __filename);
 
-let Charactor = function(opts) {
+let Character = function(opts) {
     let Entity = bearcat.getFunction('entity');
     Entity.call(this, opts);
 
@@ -42,13 +42,23 @@ let Charactor = function(opts) {
     this.equipmentParam = 1;
     this.buffs = [];
     this.curSkill = 1;  //default normal attack
-    this.characterData = this.dataApi.character().findById(this.kindId);
+    // this.characterData = this.dataApi.character().findById(this.kindId);
     this.fightSkills = {};
 };
 
+Character.prototype.toJSON = function() {
+    let result = bearcat.getFunction('entity').prototype.toJSON.apply(this);
+
+    result.hp = this.hp;
+    result.mp = this.mp,
+    result.walkSpeed = this.walkSpeed;
+
+    return result;
+}
+
 module.exports = {
-    id: 'charactor',
-    func: Charactor,
+    id: 'character',
+    func: Character,
     scope: 'prototype',
     parent: 'entity',
     props: [{

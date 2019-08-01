@@ -59,6 +59,18 @@ Entity.prototype.setPosition = function(x, y) {
     this.y = y;
 };
 
+Entity.prototype.toJSON = function() {
+    return {
+        entityId: this.entityId,
+        englishName: this.englishName,
+        kindId: this.kindId,
+        kindName: this.kindName,
+        type: this.type,
+        x: this.x,
+        y: this.y
+    }
+}
+
 module.exports = {
     id: 'entity',
     func: Entity,

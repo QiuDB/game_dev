@@ -83,7 +83,7 @@ PlayerDao.prototype.createPlayer = function(uid, name, roleId, cb) {
 
 /**
  * query player record by name
- * @param {String} name 
+ * @param {String} name
  */
 PlayerDao.prototype.getPlayerByName = function(name, cb) {
     let sql = 'select * from Player where name = ? limit 1';
@@ -100,6 +100,8 @@ PlayerDao.prototype.getPlayerByName = function(name, cb) {
             self.utils.invokeCallback(cb, null, null);
         }
 
-        self.utils.invokeCallback(cb, null, res[0]);
+        let player = bearcat.getBean('player', res[0]);
+        logger.debug('player is %j', player)
+        self.utils.invokeCallback(cb, null, player);
     })
 }
