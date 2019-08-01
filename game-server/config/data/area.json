@@ -5,6 +5,5 @@
 ["2",      "oasis",1,"绿洲",20,6000,4000,"/config/map/oasis.json",300,300],
 ["3","ice",1,"极地",50,6500,4800,"/config/map/ice.json",300,300],
 ["4","/instance/arena",2,"竞技场",10,1600,1100,"/config/map/arena.json",300,300],
-["5","/instance/path",3,"山洞",60,2560,1440,"/config/map/paths.json",300,300],
-["6","/instance/path",3,"山洞",60,2560,1440,"/config/map/paths.json",300,300]
+["5","/instance/path",3,"山洞",60,2560,1440,"/config/map/paths.json",300,300]
 ]
