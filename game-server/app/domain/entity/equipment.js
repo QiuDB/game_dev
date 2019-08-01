@@ -65,6 +65,7 @@ Equipment.prototype.toJSON = function() {
 module.exports = {
     id: 'equipment',
     func: Equipment,
+    init: 'init',
     scope: 'prototype',
     parent: 'entity',
     args: [{
