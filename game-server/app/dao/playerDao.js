@@ -80,3 +80,26 @@ PlayerDao.prototype.createPlayer = function(uid, name, roleId, cb) {
         this.utils.invokeCallback(cb, null, player);
     });
 }
+
+/**
+ * query player record by name
+ * @param {String} name 
+ */
+PlayerDao.prototype.getPlayerByName = function(name, cb) {
+    let sql = 'select * from Player where name = ? limit 1';
+    let args = [name];
+    let self = this;
+    pomelo.app.get('dbClient').query(sql, args, function(err, res) {
+        if (!!err) {
+            logger.error('getPlayerByName error: %j', err.message);
+            self.utils.invokeCallback(cb, err.message, null);
+            return;
+        }
+
+        if (!res || res.length <= 0) {
+            self.utils.invokeCallback(cb, null, null);
+        }
+
+        self.utils.invokeCallback(cb, null, res[0]);
+    })
+}
