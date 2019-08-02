@@ -1,10 +1,15 @@
 const pomelo = require('pomelo');
 const bearcat = require('bearcat');
+const async = require('async');
 const logger = require('pomelo-logger').getLogger('pomelo', __filename);
 const Consts = require('../consts/consts');
 
 let PlayerDao = function() {
     this.utils = null;
+    this.equipmentsDao = null;
+    this.bagDao = null;
+    this.fightskillDao = null;
+    this.taskDao = null;
 };
 
 module.exports = {
@@ -13,8 +18,41 @@ module.exports = {
     props: [{
         name: 'utils',
         ref: 'utils'
+    }, {
+        name: 'equipmentsDao',
+        ref: 'equipmentsDao',
+    }, {
+        name: 'bagDao',
+        ref: 'bagDao'
+    }, {
+        name: 'fightskillDao',
+        ref: 'fightskillDao'
+    }, {
+        name: 'taskDao',
+        ref: 'taskDao'
     }]
 }
+
+PlayerDao.prototype.getPlayer = function(playerId, cb) {
+    let sql = 'select * from Player where id = ?';
+    let args = [playerId];
+
+    pomelo.app.get('dbClient').query(sql, args, (err, results) => {
+        if (!!err) {
+            this.utils.invokeCallback(cb, err.message, null)
+            return;
+        }
+
+        if (!results || results.length === 0) {
+            this.utils.invokeCallback(cb, null, null);
+            return;
+        }
+
+        let player = bearcat.getBean('player', results[0]);
+        logger.debug('player is %j', player);
+        this.utils.invokeCallback(cb, null, player);
+    })
+};
 
 PlayerDao.prototype.getPlayerByUid = function(uid, cb) {
     let sql = 'select * from Player where userId = ? limit 1';
@@ -104,4 +142,52 @@ PlayerDao.prototype.getPlayerByName = function(name, cb) {
         logger.debug('player is %j', player)
         self.utils.invokeCallback(cb, null, player);
     })
-}
+};
+
+/**
+ * Get all the information of a player, include equipments, bag, skills, tasks.
+ * @param {String} playerId
+ * @param {function} cb
+ */
+PlayerDao.prototype.getPlayerAllInfo = function(playerId, cb) {
+    let self = this;
+    async.parallel([
+        // get player info
+        function(callback) {
+            self.getPlayer(playerId, player, callback);
+        },
+        // get equipmemts
+        function(callback) {
+            self.equipmentsDao.getEquipmentsByPlayerId(playerId, callback);
+        },
+        // get bag
+        function(callback) {
+            self.bagDao.getBagByPlayerId(playerId, callback);
+        },
+        // get fightskills
+        function(callback) {
+            self.fightskillDao.getFightSkillsByPlayerId(playerId, callback);
+        },
+        // get tasks
+        function(callback) {
+            self.taskDao.getTasksByPlayerId(playerId, callback);
+        }
+    ], function(err, results) {
+        let player = results[0];
+        let equipments = results[1];
+        let bag = results[2];
+        let fightskills = results[3];
+        let tasks = results[4];
+
+        player.bag = bag;
+        player.setEquipments(equipments);
+        player.addFightSkills(fightskills);
+        player.curTasks = tasks || {};
+
+        if (!!err) {
+            utils.invokeCallback(cb, err);
+        }  else {
+            utils.invokeCallback(cb, null, player);
+        }
+    })
+};
