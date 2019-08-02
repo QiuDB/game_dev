@@ -9,6 +9,10 @@ let DataApi = function() {
     this.watcher = null;
 };
 
+DataApi.instance = function() {
+    return bearcat.getBean('dataApi');
+}
+
 DataApi.prototype.init = function() {
     let watcher = chokidar.watch(configPath);
 
@@ -43,6 +47,14 @@ DataApi.prototype.area = function() {
 
 DataApi.prototype.character = function() {
     return this.datas.character;
+}
+
+DataApi.prototype.equipments = function() {
+    return this.datas.equipments;
+}
+
+DataApi.prototype.fightskill = function() {
+    return this.datas.fightskill;
 }
 
 /**
@@ -105,5 +117,6 @@ DataApiUtil.prototype.all = function() {
 module.exports = {
     id: 'dataApi',
     func: DataApi,
-    init: 'init'
+    init: 'init',
+    DataApi: DataApi
 }
