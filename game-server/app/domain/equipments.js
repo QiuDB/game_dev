@@ -19,5 +19,9 @@ let Equipments = function(opts) {
 module.exports = {
     id: 'equipments',
     func: Equipments,
-    lazy: true,
+    scope: 'prototype',
+    args: [{
+        name: 'opts',
+        type: 'Obejct'
+    }]
 }
