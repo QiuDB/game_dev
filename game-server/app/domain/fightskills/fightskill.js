@@ -14,6 +14,10 @@ let Fightskill = function(opts) {
     this.coolDownTime = 0;
 };
 
+Fightskill.prototype.create = function(skill) {
+    
+};
+
 module.exports = {
     id: 'fightskill',
     func: Fightskill,

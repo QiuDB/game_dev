@@ -1,5 +1,9 @@
 let Utils = function () { };
 
+Utils.instance = function() {
+    return bearcat.getBean('utils');
+}
+
 /**
  * Check and invoke callback function
  */
