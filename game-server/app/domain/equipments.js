@@ -19,6 +19,7 @@ let Equipments = function(opts) {
 module.exports = {
     id: 'equipments',
     func: Equipments,
+    parent: 'persistent',
     scope: 'prototype',
     args: [{
         name: 'opts',

@@ -17,7 +17,8 @@ let Bag = function(opts) {
 module.exports = {
     id: 'id',
     func: Bag,
-    lazy: true,
+    scope: 'prototype',
+    parent: 'presisten',
     args: [{
         name: 'opts',
         type: 'Object '
