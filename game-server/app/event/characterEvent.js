@@ -17,4 +17,9 @@ CharacterEvent.prototype.addEventForCharacter = function(character) {
     character.on('attack', function(args) {
         logger.debug('catch character attack event:\n %o', args);
     });
+};
+
+module.exports = {
+    id: 'characterEvent',
+    func: CharacterEvent
 }
